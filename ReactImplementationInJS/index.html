@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom React Example</title>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script>
+  // Step 1: Create an object for the React element (anchor tag)
+  const reactElement = {
+    type: 'a',
+    props: {
+      href: 'https://www.example.com',
+      target: '_blank',
+      children: 'Click me!'
+    }
+  };
+
+  // Step 2: Create a function to generate HTML code from the React element
+  function createElement(node) {
+    if (typeof node === 'string') {
+      return document.createTextNode(node);
+    }
+
+    const element = document.createElement(node.type);
+
+    if (node.props.children) {
+      if (typeof node.props.children === 'string') {
+        element.appendChild(document.createTextNode(node.props.children));
+      } else {
+        node.props.children.forEach(child => {
+          element.appendChild(createElement(child));
+        });
+      }
+    }
+
+    // Set attributes
+    if (node.props) {
+      Object.keys(node.props).forEach(prop => {
+        if (prop !== 'children') {
+          element[prop] = node.props[prop];
+        }
+      });
+    }
+
+    return element;
+  }
+
+  // Step 3: Create a function to render the React element to a specific HTML element
+  function customRender(element, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    container.appendChild(createElement(element));
+  }
+
+  // Render the anchor tag to the root element
+  customRender(reactElement, 'root');
+</script>
+
+</body>
+</html>
